@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Dictionary\TicketStatus;
 use App\Repository\TicketRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,6 +31,10 @@ class Ticket
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TicketStatus $status = null;
 
     public function __construct()
     {
@@ -91,6 +96,18 @@ class Ticket
     public function setProject(?Project $project): static
     {
         $this->project = $project;
+
+        return $this;
+    }
+
+    public function getStatus(): ?TicketStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?TicketStatus $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
