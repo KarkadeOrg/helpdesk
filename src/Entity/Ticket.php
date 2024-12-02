@@ -26,7 +26,7 @@ class Ticket
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'ticket', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'ticket', orphanRemoval: true, cascade: ['persist'])]
     private Collection $messages;
 
     #[ORM\ManyToOne]
