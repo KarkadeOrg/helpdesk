@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 class Ticket
 {
@@ -32,9 +33,28 @@ class Ticket
     #[ORM\JoinColumn(nullable: false)]
     private ?TicketStatus $status = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
+    }
+
+    #[ORM\PrePersist]
+    public function updateCreatedAtValue(): void
+    {
+        $this->setCreatedAt(new \DateTimeImmutable());
+        $this->updateUpdatedAtValue();
+    }
+
+    #[ORM\PreUpdate]
+    public function updateUpdatedAtValue(): void
+    {
+        $this->setUpdatedAt(new \DateTimeImmutable());
     }
 
     public function getId(): ?Uuid
@@ -92,6 +112,30 @@ class Ticket
     public function setStatus(?TicketStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

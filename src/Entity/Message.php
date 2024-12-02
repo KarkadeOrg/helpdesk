@@ -24,6 +24,25 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?Ticket $ticket = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\PrePersist]
+    public function updateCreatedAtValue(): void
+    {
+        $this->setCreatedAt(new \DateTimeImmutable());
+        $this->updateUpdatedAtValue();
+    }
+
+    #[ORM\PreUpdate]
+    public function updateUpdatedAtValue(): void
+    {
+        $this->setUpdatedAt(new \DateTimeImmutable());
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -49,6 +68,30 @@ class Message
     public function setTicket(?Ticket $ticket): static
     {
         $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }
