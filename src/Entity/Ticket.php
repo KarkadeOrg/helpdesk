@@ -28,10 +28,6 @@ class Ticket
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'ticket', orphanRemoval: true)]
     private Collection $messages;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Project $project = null;
-
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?TicketStatus $status = null;
@@ -84,18 +80,6 @@ class Ticket
                 $message->setTicket(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getProject(): ?Project
-    {
-        return $this->project;
-    }
-
-    public function setProject(?Project $project): static
-    {
-        $this->project = $project;
 
         return $this;
     }
