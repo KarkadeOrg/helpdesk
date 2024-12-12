@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\SupportTypeDto;
 use App\Entity\Dictionary\TicketStatus;
 use App\Entity\Message;
+use App\Entity\SupportForm;
 use App\Entity\Ticket;
 use App\Form\SupportType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,8 +17,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/support', name: 'app_support_')]
 class SupportController extends AbstractController
 {
-    #[Route('/', name: 'form', methods: ['GET', 'POST'])]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    #[Route('/{supportForm}', name: 'form', methods: ['GET', 'POST'])]
+    public function index(Request $request, SupportForm $supportForm, EntityManagerInterface $em): Response
     {
         $dto = new SupportTypeDto();
         $form = $this->createForm(SupportType::class, $dto);
@@ -34,7 +35,7 @@ class SupportController extends AbstractController
             $em->persist($ticket);
             $em->flush();
 
-            return $this->redirectToRoute('app_support_form', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_support_form', ['supportForm' => $supportForm->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('support/form.html.twig', [

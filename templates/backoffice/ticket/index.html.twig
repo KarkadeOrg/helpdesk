@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tickets{% endblock %}
+
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Created</th>
+            <th>Status</th>
+            <th>Topic</th>
+            <th>First message</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for ticket in ticketList.tickets %}
+                <tr>
+                    <td>{{ ticket.id }}</td>
+                    <td>{{ ticket.createdAt | date('d.m.Y H:i:s') }}</td>
+                    <td>{{ ticket.status.name }}</td>
+                    <td>{{ ticket.topic }}</td>
+                    <td>{{ ticketList.messageByTicketId(ticket.id).message | nl2br }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
