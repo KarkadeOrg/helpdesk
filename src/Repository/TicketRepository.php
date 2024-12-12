@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Dto\TicketListDto;
-use App\Entity\Message;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,11 +19,17 @@ class TicketRepository extends ServiceEntityRepository
 
     public function getTicketList(): TicketListDto
     {
-        $tickets = $this->createQueryBuilder('t')
-            ->select('t')
-            ->orderBy('t.createdAt', 'DESC')
+        $tickets = $this->getEntityManager()
+            ->createQuery(
+                <<<DQL
+                    SELECT t, s FROM App\Entity\Ticket t 
+                    LEFT JOIN t.status s WHERE s.id = t.status
+                    ORDER BY t.createdAt DESC
+                DQL
+            )
+            ->setFirstResult(0)
             ->setMaxResults(10)
-            ->getQuery()->getResult();
+            ->getResult();
 
         $mIds = $this->getEntityManager()->getConnection()
             ->executeQuery(<<<SQL
@@ -36,11 +41,11 @@ class TicketRepository extends ServiceEntityRepository
                 [array_map(static fn(Ticket $t) => $t->getId()?->toString(), $tickets)], [\Doctrine\DBAL\ArrayParameterType::STRING]
             )->fetchFirstColumn();
 
-        $messages = $this->getEntityManager()->createQueryBuilder()
-            ->select('m')->from(Message::class, 'm')
-            ->where('m.id IN (:ids)')
+        $messages = $this
+            ->getEntityManager()
+            ->createQuery(/** @lang DQL */ "SELECT m FROM App\Entity\Message m WHERE m.id IN (:ids)")
             ->setParameter('ids', $mIds)
-            ->getQuery()->getResult();
+            ->getResult();
 
         return new TicketListDto($tickets, $messages);
     }
