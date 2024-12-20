@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/backoffice/ticket', name: 'app_backoffice_ticket_')]
 class TicketController extends AbstractController
 {
     public function __construct(
@@ -18,7 +19,7 @@ class TicketController extends AbstractController
     {
     }
 
-    #[Route('/backoffice/ticket', name: 'app_backoffice_ticket')]
+    #[Route('/', name: 'index')]
     public function index(): Response
     {
         return $this->render('backoffice/ticket/index.html.twig', [
@@ -26,7 +27,7 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[Route('/backoffice/ticket/{ticket}', name: 'app_backoffice_ticket_show')]
+    #[Route('/{ticket}', name: 'show')]
     public function show(Ticket $ticket): Response
     {
         $messages = $this->messageRepository->getByTicketId($ticket->getId());
