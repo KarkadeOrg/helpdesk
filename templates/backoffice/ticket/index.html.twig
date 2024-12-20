@@ -14,15 +14,20 @@
         </tr>
         </thead>
         <tbody>
-            {% for ticket in ticketList.tickets %}
-                <tr>
-                    <td>{{ ticket.id }}</td>
-                    <td>{{ ticket.createdAt | date('d.m.Y H:i:s') }}</td>
-                    <td>{{ ticket.status.name }}</td>
-                    <td>{{ ticket.topic }}</td>
-                    <td>{{ ticketList.messageByTicketId(ticket.id).message | nl2br }}</td>
-                </tr>
-            {% endfor %}
+        {% for ticket in ticketList.tickets %}
+            <tr>
+                <td>
+                    <a rel="nofollow noopener noopener"
+                       href="{{ path('app_backoffice_ticket_show', { ticket: ticket.id }) }}">
+                        {{ ticket.id }}
+                    </a>
+                </td>
+                <td>{{ ticket.createdAt | date('d.m.Y H:i:s') }}</td>
+                <td>{{ ticket.status.name }}</td>
+                <td>{{ ticket.topic }}</td>
+                <td>{{ ticketList.messageByTicketId(ticket.id).message | nl2br }}</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock %}

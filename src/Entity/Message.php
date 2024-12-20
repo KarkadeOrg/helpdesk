@@ -31,6 +31,10 @@ class Message
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'messages', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Person $author = null;
+
     #[ORM\PrePersist]
     public function updateCreatedAtValue(): void
     {
@@ -93,6 +97,18 @@ class Message
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?Person
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?Person $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }
