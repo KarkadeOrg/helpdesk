@@ -1,0 +1,4 @@
+workers:
+  npm_encore_watch:
+    cmd: ['npx', 'encore', 'dev', '--watch']
+  docker_compose: ~

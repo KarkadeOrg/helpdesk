@@ -61,6 +61,7 @@ class SupportController extends AbstractController
         return $this->render('support/form.html.twig', [
             'dto' => $dto,
             'form' => $form,
+            'supportForm' => $supportForm,
         ]);
     }
 }
