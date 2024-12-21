@@ -19,7 +19,7 @@
             <tr>
                 <td>
                     {{ message.author.email ?? message.author.name }}
-                    <br />
+                    <br/>
                     {{ message.createdAt | date('d.m.Y H:i:s') }}
                 </td>
                 <td>{{ message.message | nl2br }}</td>
@@ -27,4 +27,10 @@
         {% endfor %}
         </tbody>
     </table>
+    <hr class="my-4" />
+    <h2>Send message in ticket</h2>
+    {{ form_start(sendMessageForm) }}
+    {{ form_widget(sendMessageForm) }}
+    <button class="btn btn-primary">{{ button_label|default('Send') }}</button>
+    {{ form_end(sendMessageForm) }}
 {% endblock %}

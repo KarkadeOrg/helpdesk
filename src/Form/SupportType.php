@@ -25,6 +25,7 @@ class SupportType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => SupportTypeDto::class,
+            'csrf_token_id' => 'support_message_web_send',
         ]);
     }
 }
