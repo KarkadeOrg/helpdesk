@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: 'postgres:17-alpine'
+    environment:
+      PGPASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    volumes:
+      - 'helpdesk-postgres:/var/lib/postgresql/data'
+    networks:
+      - helpdesk-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${DB_DATABASE}", "-U", "${DB_USERNAME}" ]
+      retries: 3
+      timeout: 5s
+  app:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: "postgresql://${DB_USERNAME}:${DB_PASSWORD}@postgres:5432/${DB_DATABASE}?serverVersion=17&charset=utf8"
+    ports:
+      - '${APP_PORT_FORWARD:-8080}:8080'
+    volumes:
+      - 'helpdesk-logs:/app/var/log'
+    networks:
+      - helpdesk-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+networks:
+  helpdesk-network:
+    driver: bridge
+volumes:
+  helpdesk-postgres:
+    driver: local
+  helpdesk-logs:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./log
